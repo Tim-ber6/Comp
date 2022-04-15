@@ -1,0 +1,107 @@
+from tkinter import *
+from tkinter import ttk
+from http import client
+import urllib
+import json
+from urllib import response
+def main():
+# Create the window
+  root = Tk()
+  root.title("PokiDex")
+  root.geometry("500x500")
+
+  
+  #label location 
+  frm_top = ttk.Frame(root)
+  frm_top.grid(row=0, column=0, columnspan=2)
+  
+  InfoBox = ttk.Frame(root)
+  InfoBox.grid(row=1, column=0)
+  
+
+  #Search thing related
+  frm_btm_left = ttk.Frame(root)
+  frm_btm_left.grid(row=2, column=0)
+
+  #Stats and info
+  frm_btm_right = ttk.Frame(root)
+  frm_btm_right.grid(row=1, column=2)
+
+# Create and label the user input box and put them in the top frame
+  lbl_name = ttk.Label(frm_top, text='Enter a pokemon:')
+  lbl_name.grid(row=0, column=0, padx=10, pady=10)
+
+  ent_name = ttk.Entry(frm_top)
+  ent_name.grid(row=0, column=1, padx=(0,10), pady=10)
+  
+  
+# Event handler function for button click event
+  def btn_hello_click():
+    name = ent_name.get()
+    
+    
+    pokeApi = client.HTTPSConnection('pokeapi.co',443)
+    pokeApi.request('GET', '/api/v2/pokemon/' + name)
+    response = pokeApi.getresponse()
+    print(response)
+    jsonData = response.read().decode()
+    dictionary = json.loads(jsonData)
+    PStats = dictionary['stats']
+
+    #Stats
+    #Health VV
+   
+    PHealth = PStats[0]['base_stat']
+
+    #Attack
+  
+    PAttack = PStats[1]['base_stat']
+
+    #Defense
+   
+    PDefense = PStats[2]['base_stat']
+    #Special Attack
+    
+    PSAttack = PStats[3]['base_stat']
+    #Special Defense
+  
+    PSDefense = PStats[4]['base_stat']
+    #Speed
+    
+    PSpeed = PStats[5]['base_stat']
+
+    #Info
+    #Height
+   
+    PHeight = dictionary['height']
+    #Weight
+    
+    PWeight = dictionary['weight']
+    #Type
+    
+    PType = dictionary['types'][0]['type']['name']
+    #organizes the text in a nice enough format
+    PStats = '\n'+'Health: ' + str(PHealth) + '\n'+'Attack: '+ str(PAttack)+'\n' + 'Defense:'+str(PDefense) +'\n''Special Attack: '+ str(PSAttack) +'\n'+ 'Special Defense: '+ str(PSDefense)+ '\n'+ 'Speed: '+str(PSpeed)+ '\n'+'Height: '+str(PHeight)+ '\n'+'Type: '+str(PType)
+    PInfo = 'Height: '+str(PHeight)+ '\n'+'Type: '+str(PType) + '\n' + 'Weight: '+str(PWeight)
+    lbl_Stats['text'] = 'Stats: '+ PStats
+    lbl_Info['text'] = 'Info:' + '\n' +PInfo
+
+
+
+
+
+  
+# Create the 'Search' button and put it in the bottom left frame
+  btn_hello = ttk.Button(frm_btm_left, text='Search', command=btn_hello_click)
+  btn_hello.grid(padx=10, pady=10)
+
+# Create the "Stats and info" labels and put it in the middle of the page
+  lbl_Stats = ttk.Label(frm_btm_right)
+  lbl_Stats.grid(padx=10, pady=10)
+
+  lbl_Info = ttk.Label(InfoBox)
+  lbl_Info.grid(padx=10, pady=10)
+# Loop and listen for events until the window is closed
+ 
+  root.mainloop()
+main()
